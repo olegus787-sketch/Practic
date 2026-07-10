@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int n, m, u, v;
+vector<vector<int>> g;
+vector<int> parent;
+vector<bool> used;
+bool found = false;
+
+void dfs(int cur) {
+    if (found) return;
+    if (cur == v) {
+        found = true;
+        return;
+    }
+    for (int to : g[cur]) {
+        if (!used[to]) {
+            used[to] = true;
+            parent[to] = cur;
+            dfs(to);
+            if (found) return;
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> m >> u >> v;
+    g.assign(n + 1, {});
+    for (int i = 0; i < m; ++i) {
+        int a, b;
+        cin >> a >> b;
+        g[a].push_back(b);
+        g[b].push_back(a);
+    }
+
+    if (u == v) {
+        cout << u << '\n';
+        return 0;
+    }
+
+    parent.assign(n + 1, 0);
+    used.assign(n + 1, false);
+    used[u] = true;
+    dfs(u);
+
+    if (!found) {
+        cout << -1 << '\n';
+    } else {
+        vector<int> path;
+        for (int cur = v; cur != 0; cur = parent[cur]) {
+            path.push_back(cur);
+        }
+        reverse(path.begin(), path.end());
+        for (size_t i = 0; i < path.size(); ++i) {
+            if (i) cout << ' ';
+            cout << path[i];
+        }
+        cout << '\n';
+    }
+    return 0;
+}
