@@ -1,0 +1,40 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    const long long SCALE = 1000000000000000LL; // 10^15
+    long long total_int = 0, total_frac = 0;
+    string s;
+
+    while (cin >> s) {
+        size_t dot = s.find('.');
+        string intPart, fracPart;
+        if (dot == string::npos) {
+            intPart = s;
+            fracPart = "";
+        } else {
+            intPart = s.substr(0, dot);
+            fracPart = s.substr(dot + 1);
+        }
+        while (fracPart.length() < 15) fracPart += '0';
+        if (fracPart.length() > 15) fracPart = fracPart.substr(0, 15);
+
+        long long int_val = stoll(intPart);
+        long long frac_val = stoll(fracPart);
+
+        total_int += int_val;
+        total_frac += frac_val;
+        total_int += total_frac / SCALE;
+        total_frac %= SCALE;
+    }
+
+    string frac_str = to_string(total_frac);
+    while (frac_str.length() < 15) frac_str = "0" + frac_str;
+    cout << total_int << '.' << frac_str << '\n';
+    return 0;
+}
